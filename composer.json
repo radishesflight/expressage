@@ -1,0 +1,29 @@
+{
+    "name": "radishesflight/expressage",
+    "description": "快递面单",
+    "type": "library",
+    "version": "1.0.0",
+    "keywords": [
+        "快递面单",
+        "邮政",
+        "申通",
+        "中通"
+    ],
+    "require": {
+        "php": ">=7.1.0",
+        "lpilp/guomi": "^2.0"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "radishesflight",
+            "email": "aradishesflight@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "RadishesFlight\\ExpressAge\\": "src/"
+        }
+    },
+    "minimum-stability": "dev"
+}
