@@ -2,7 +2,6 @@
     "name": "radishesflight/expressage",
     "description": "快递面单",
     "type": "library",
-    "version": "1.0.0",
     "keywords": [
         "快递面单",
         "邮政",
