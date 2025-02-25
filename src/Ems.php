@@ -48,14 +48,4 @@ class Ems implements ExpressAgeInterFace
         $json = $this->curlPost($this->host, $data);
         return $json ? json_decode($json, true) : [];
     }
-
-    public function takeNumber($data)
-    {
-        // TODO: Implement takeNumber() method.
-    }
-
-    public function placeOrder($data)
-    {
-        // TODO: Implement placeOrder() method.
-    }
 }

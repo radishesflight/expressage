@@ -32,4 +32,21 @@ trait ExpressAgeCurlTrait
             return $response;
         }
     }
+
+    public function curlGet($url, $param = array(), $header = array(), $timeout = 30, $format = 'html')
+    {
+        $ch = curl_init();
+        if (is_array($param)) {
+            $url = $url . '?' . http_build_query($param);
+        }
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+        curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
+        curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)");
+
+        $data = curl_exec($ch);
+
+        curl_close($ch);
+        return $data;
+    }
 }
