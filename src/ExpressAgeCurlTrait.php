@@ -4,12 +4,14 @@ namespace RadishesFlight\ExpressAge;
 
 trait ExpressAgeCurlTrait
 {
-    public function curlPost($url, $data, $header = ['Content-type:multipart/form-data'])
+    protected function curlPost(string $url, array $data, array $headers = ['Content-type:multipart/form-data']): string
     {
         $curl = curl_init();
-        $header = array_merge([
-            "Accept: */*",
-        ], $header);
+        
+        $headers = array_merge([
+            "Accept: application/json",
+        ], $headers);
+
         curl_setopt_array($curl, [
             CURLOPT_URL => $url,
             CURLOPT_RETURNTRANSFER => true,
@@ -19,34 +21,63 @@ trait ExpressAgeCurlTrait
             CURLOPT_SSL_VERIFYHOST => false,
             CURLOPT_CUSTOMREQUEST => "POST",
             CURLOPT_POSTFIELDS => $data,
-            CURLOPT_HTTPHEADER => $header,
+            CURLOPT_HTTPHEADER => $headers,
+            CURLOPT_FOLLOWLOCATION => true,
         ]);
-        $response = curl_exec($curl);
-        $err = curl_error($curl);
 
+        $response = curl_exec($curl);
+        $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        $error = curl_error($curl);
         curl_close($curl);
 
-        if ($err) {
-            echo "cURL Error #:" . $err;
-        } else {
-            return $response;
+        if ($error) {
+            throw new \RuntimeException("cURL Error: {$error}");
         }
+
+        if ($httpCode >= 400) {
+            throw new \RuntimeException("HTTP Error: {$httpCode}");
+        }
+
+        return $response;
     }
 
-    public function curlGet($url, $param = array(), $header = array(), $timeout = 30, $format = 'html')
+    protected function curlGet(string $url, array $params = [], array $headers = [], int $timeout = 30): string
     {
         $ch = curl_init();
-        if (is_array($param)) {
-            $url = $url . '?' . http_build_query($param);
+        
+        if (!empty($params)) {
+            $url .= '?' . http_build_query($params);
         }
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
-        curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
-        curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)");
 
-        $data = curl_exec($ch);
+        $headers = array_merge([
+            'Accept: application/json',
+            'User-Agent: ExpressAge-PHP/1.0',
+        ], $headers);
 
+        curl_setopt_array($ch, [
+            CURLOPT_URL => $url,
+            CURLOPT_HTTPHEADER => $headers,
+            CURLOPT_TIMEOUT => $timeout,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_SSL_VERIFYHOST => false,
+        ]);
+
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $error = curl_error($ch);
         curl_close($ch);
-        return $data;
+
+        if ($error) {
+            throw new \RuntimeException("cURL Error: {$error}");
+        }
+
+        if ($httpCode >= 400) {
+            throw new \RuntimeException("HTTP Error: {$httpCode}");
+        }
+
+        return $response;
     }
 }

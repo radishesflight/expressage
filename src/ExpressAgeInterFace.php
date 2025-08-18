@@ -4,6 +4,6 @@ namespace RadishesFlight\ExpressAge;
 
 interface ExpressAgeInterFace
 {
-    public function signature($data);
-    public function general($data);
+    public function signature(array $data): array;
+    public function general(array $data): array;
 }

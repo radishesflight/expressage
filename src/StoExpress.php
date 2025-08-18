@@ -2,44 +2,50 @@
 
 namespace RadishesFlight\ExpressAge;
 
-class StoExpress implements ExpressAgeInterFace
+use Exception;
+
+class StoExpress extends AbstractExpress
 {
-    use ExpressAgeCurlTrait;
+    private $secret;
+    private $fromAppKey;
+    private $fromCode;
 
-    public $secret;
-    public $host;
-    public $fromAppKey;
-    public $fromCode;
-
-    public function __construct($host, $fromAppKey, $fromCode, $secret)
+    public function __construct(string $host, string $fromAppKey, string $fromCode, string $secret)
     {
-        $this->host = $host;
+        parent::__construct($host);
         $this->secret = $secret;
         $this->fromAppKey = $fromAppKey;
         $this->fromCode = $fromCode;
-        return $this;
     }
 
-    public function signature($data)
+    public function signature(array $data): array
     {
-        $data['data_digest'] = base64_encode(md5($data['content'] . $this->secret, true));
-        return $data;
-    }
+        $this->validateRequiredData($data, ['content']);
 
-    public function general($data)
-    {
-        $data = $this->signature($data);
-
-        $param = [
-            'api_name' => $data['api_name'],
+        return [
+            'api_name' => $data['api_name'] ?? '',
             'content' => $data['content'],
-            'data_digest' => $data['data_digest'],
-            'from_appkey' => $this->fromAppKey,
-            'from_code' => $this->fromCode,
-            'to_appkey' => $data['to_appkey'],
-            'to_code' => $data['to_code'],
+            'data_digest' => base64_encode(md5($data['content'] . $this->secret, true)),
         ];
+    }
 
-        return $this->curlGet($this->host, $param);
+    public function general(array $data): array
+    {
+        try {
+            $signedData = $this->signature($data);
+            $this->validateRequiredData($data, ['to_appkey', 'to_code']);
+
+            $params = array_merge($signedData, [
+                'from_appkey' => $this->fromAppKey,
+                'from_code' => $this->fromCode,
+                'to_appkey' => $data['to_appkey'],
+                'to_code' => $data['to_code'],
+            ]);
+
+            $response = $this->curlGet($this->host, $params);
+            return $this->formatResponse($response);
+        } catch (Exception $e) {
+            throw new Exception("STO Express API Error: " . $e->getMessage());
+        }
     }
 }
