@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../vendor/autoload.php';
-$ems = new \RadishesFlight\ExpressAge\Ems('https://api.ems.com.cn/amp-prod-api/f/amp/api/test',
+$ems = new \RadishesFlight\ExpressAge\Ems\Ems('https://api.ems.com.cn/amp-prod-api/f/amp/api/test',
     '1100172843670', 'UkoD7gaL7RzI8MDf', 'QkJ3U01vdFpIa3o3a2o0eQ==');
 $data=[
     [
