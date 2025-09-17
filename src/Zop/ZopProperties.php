@@ -7,7 +7,9 @@
  */
 namespace RadishesFlight\ExpressAge\Zop;
 
-
+/**
+ * 中通
+ */
 class ZopProperties
 {
     private $companyid;
