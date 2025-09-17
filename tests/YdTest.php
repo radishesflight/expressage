@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../vendor/autoload.php';
 
-$obj = new  \RadishesFlight\ExpressAge\Yunda\Yd( '999999', '04d4ad40eeec11e9bad2d962f53dda9d', '529951202001', 'Y4TQ3WBar9hpnw7As8xUZEReSuDdf2');
+$obj = new  \RadishesFlight\ExpressAge\Yunda\Yd('999999', '04d4ad40eeec11e9bad2d962f53dda9d', '529951202001', 'Y4TQ3WBar9hpnw7As8xUZEReSuDdf2');
 $obj->setServerUrl('https://u-openapi.yundasys.com/openapi-api/v1/accountOrder/createBmOrder');
 $info = [
     "orders" => [
@@ -69,12 +69,12 @@ $obj->setServerUrl('https://u-openapi.yundasys.com/openapi/outer/v1/bm/getPdfInf
 $res = $obj->execute($bizContentArr);
 
 
-$pdfs= empty($res['data'])?[]:array_column($res['data'],null,'mailno');
-foreach ($pdfs as $k=>$pdf){
+$pdfs = empty($res['data']) ? [] : array_column($res['data'], null, 'mailno');
+foreach ($pdfs as $k => $pdf) {
     $pdfStream = $pdf['pdfInfo'];
     $pdfStream = base64_decode($pdfStream);
 // 保存为本地文件
-    $filePath = __DIR__ ."/$k". "output.pdf";
+    $filePath = __DIR__ . "/$k" . "output.pdf";
     file_put_contents($filePath, $pdfStream);
 }
 
