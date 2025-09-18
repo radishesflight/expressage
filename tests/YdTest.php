@@ -54,8 +54,21 @@ $info = [
     ]
 ];
 
-//$res = $obj->execute($info);
+$res = $obj->execute($info);
+//print_r($res);exit();
 
+//取消
+$cancelBmOrder = [
+    'orders' => [
+        [
+            'order_serial_no'=> '20121217150021',
+            'mailno' => '313000000514213',
+        ]
+    ]
+];
+$obj->setServerUrl('https://u-openapi.yundasys.com/openapi-api/v1/accountOrder/cancelBmOrder');
+$res = $obj->execute($cancelBmOrder);
+print_r($res);exit();
 
 //面单
 $bizContentArr = [
