@@ -12,7 +12,7 @@ $pwd = "H5CD3zE6";             // 示例口令
 $jt = new Jt($apiAccount, $privateKey, $customerCode, $pwd);
 
 $order = [
-    "txlogisticId" => "TEST202509160001",
+    "txlogisticId" => "TEST202509160011",
     "expressType" => "EZ",
     "orderType" => "1",
     "serviceType" => "01",
@@ -47,8 +47,14 @@ $order = [
 
 //下单
 $response = $jt->execute($order,'https://uat-openapi.jtexpress.com.cn/webopenplatformapi/api/order/addOrder?uuid=26ba9f2ba9164f969837e67cf758d8e1');
-//print_r($response);
+//print_r($response);exit;
 
+//取消
+$response = $jt->execute([
+    "reason"  => "测试",
+    "txlogisticId"=> "TEST202509160011"
+],'https://uat-openapi.jtexpress.com.cn/webopenplatformapi/api/order/cancelOrder?uuid=26ba9f2ba9164f969837e67cf758d8e1');
+print_r($response);exit;
 //面单
 $bizContentArr = [
     "billCode"     => "UT0000755750756",
