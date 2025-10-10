@@ -17,9 +17,9 @@ $info = [
                     "remark" => "袜子"
                 ]
             ],
-            "khddh" => "2012121715001",
+            "khddh" => "20121217150101",
             "node_id" => "350",
-            "order_serial_no" => "20121217150021",
+            "order_serial_no" => "20121217150101",
             "order_type" => "common",
             "platform_source" => "",
             "receiver" => [
@@ -57,6 +57,26 @@ $info = [
 $res = $obj->execute($info);
 //print_r($res);exit();
 
+//订阅轨迹
+$subscribe = [
+    'orders' => [
+        [
+            'orderid'=> '20121217150101',
+            'mailno' => '313000000730714',
+        ]
+    ]
+];
+$obj->setServerUrl('https://u-openapi.yundasys.com/openapi/outer/logictis/subscribe');
+$res = $obj->execute($subscribe);
+print_r($res);exit();
+
+//轨迹查询
+$query = [
+    'mailno' => '313000000514213',
+];
+$obj->setServerUrl('https://u-openapi.yundasys.com/openapi/outer/logictis/query');
+$res = $obj->execute($query);
+print_r($res);exit();
 //取消
 $cancelBmOrder = [
     'orders' => [
