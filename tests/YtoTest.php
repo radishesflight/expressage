@@ -109,3 +109,25 @@ file_put_contents($filePath, $pdfStream);
 echo "PDF 已保存: {$filePath}";
 
 
+
+
+
+//取消
+$paramArray =[
+    'logisticsNo' => 'DXqXQ0G135P',
+    'cancelDesc'=>'测试'
+];
+$sign = $obj->sign(json_encode($paramArray, JSON_UNESCAPED_UNICODE + JSON_UNESCAPED_SLASHES), 'korder_cancel_adapter', 'u2Z1F7Fh');
+//毫秒时间戳
+$data = [
+    //毫秒时间戳
+    'timestamp' => round(microtime(true) * 1000),
+    'param' => json_encode($paramArray, JSON_UNESCAPED_UNICODE + JSON_UNESCAPED_SLASHES),
+    'sign' => $sign,
+    'format' => 'JSON',
+];
+
+$res = $obj->execute("https://openuat.yto56test.com:6443/open/korder_cancel_adapter/v1/JRe9WQ/K9991024989", $data);
+print_r($res);exit();
+
+
