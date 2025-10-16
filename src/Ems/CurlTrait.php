@@ -29,7 +29,6 @@ trait CurlTrait
         $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         $error = curl_error($curl);
         curl_close($curl);
-print_r($response);
         if ($error) {
             throw new \RuntimeException("cURL Error: {$error}");
         }
