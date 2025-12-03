@@ -10,7 +10,8 @@
     ],
     "require": {
         "php": ">=7.1.0",
-        "lpilp/guomi": "^2.0"
+        "lpilp/guomi": "^2.0",
+        "tecnickcom/tcpdf": "dev-main"
     },
     "license": "MIT",
     "authors": [
