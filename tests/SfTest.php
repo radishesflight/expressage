@@ -9,6 +9,7 @@ $appKey = 'HswOK9IZdTvqMQAduYGaXJDZ7eq0ZOxM';
 // 创建API实例（沙箱环境）
 $sfApi = new \RadishesFlight\ExpressAge\Sf\Sf($appId, $appKey, true);
 
+//https://open.sf-express.com/Api/ApiDetails?level3=393&interName=%E4%B8%8B%E8%AE%A2%E5%8D%95%E6%8E%A5%E5%8F%A3-EXP_RECE_CREATE_ORDER
 // 构造订单数据
 $orderData = [
     "cargoDetails" => [
@@ -42,7 +43,8 @@ $orderData = [
         ]
     ],
     "language" => "zh_CN",
-    "orderId" => "OrderNum20200612223"
+    "orderId" => "OrderNum20200612223",
+    "monthlyCard" => "7551234567" //月结号
 ];
 //生成token
 $res = $sfApi->getAccessToken();
