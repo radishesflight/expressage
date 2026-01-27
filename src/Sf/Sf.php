@@ -2,48 +2,92 @@
 
 namespace RadishesFlight\ExpressAge\Sf;
 
+use Exception;
+
 class Sf
 {
-    public static function sign($reqBody, $secretKey, $timestamp)
+    private $appId;     // 应用ID
+    private $appKey;    // 应用密钥
+    private $apiUrl;    // API接口地址
+
+    public function __construct($appId, $appKey, $sandbox = true)
     {
-        return hash('sha512', $reqBody . $secretKey . $timestamp);
+        $this->appId = $appId;
+        $this->appKey = $appKey;
+        // 沙箱环境和生产环境的接口地址不同
+        $this->apiUrl = $sandbox
+            ? 'https://sfapi-sbox.sf-express.com/'
+            : 'https://sfapi.sf-express.com/';
     }
 
-    public static function getMillisecondTimestamp()
+    /**
+     * 执行请求
+     */
+    public function execute($serviceCode,$orderData, $accessToken,$url='std/service')
     {
-        list($micro, $seconds) = explode(' ', microtime());
-        return (int)sprintf('%.0f', (floatval($micro) + floatval($seconds)) * 1000);
+        $time = time() * 1000;
+        // 构造请求参数
+        $requestParams = [
+            'partnerID' => $this->appId,
+            'requestID' => uniqid(), // 请求唯一标识
+            'serviceCode' => $serviceCode,
+            'timestamp' => $time, //毫秒时间戳
+            'msgData' => json_encode($orderData, JSON_UNESCAPED_UNICODE + JSON_UNESCAPED_SLASHES),
+            'accessToken' => $accessToken,
+        ];
+        // 发送请求
+        return $this->sendRequest($url, $requestParams);
     }
 
-    public static function curlPost($url, $data, $header = [])
+    public function getAccessToken()
     {
-        if (empty($header)) {
-            $header = ['Content-Type: application/json'];
-        } else {
-            $header = array_merge(['Content-Type: application/json'], $header);
-        }
+        return $this->sendRequest('oauth2/accessToken', ['partnerID' => $this->appId, 'secret' => $this->appKey, 'grantType' => 'password']);
+    }
 
-        // 将数据转换为JSON格式
-        $jsonData = json_encode($data, JSON_UNESCAPED_UNICODE + JSON_UNESCAPED_SLASHES);
-// 设置cURL选项
-        $ch = curl_init($url);
-        // 设置cURL选项
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    /**
+     * 生成签名
+     */
+    private function generateSign($params)
+    {
+        $msgData = $params['msgData'];
+        $timestamp = $params['timestamp'];
+        $checkWord = $this->appKey;
+        // 1. 拼接签名原文（顺序非常重要）
+        $toVerifyText = $msgData . $timestamp . $checkWord;
 
-// 执行cURL会话并获取返回结果
+        // 2. MD5（得到二进制结果）
+        $md5Binary = md5($toVerifyText, true);
+
+        // 3. Base64 编码
+        return base64_encode($md5Binary);
+    }
+
+    /**
+     * 发送HTTP请求
+     */
+    private function sendRequest($url, $params)
+    {
+        $ch = curl_init();
+        curl_setopt_array($ch, [
+            CURLOPT_URL => $this->apiUrl . $url,
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => http_build_query($params),
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_SSL_VERIFYHOST => false,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTPHEADER => [
+                'Content-Type: application/x-www-form-urlencoded;charset=UTF-8'
+            ]
+        ]);
+
         $response = curl_exec($ch);
-
-// 检查是否有错误发生
-        if (curl_errno($ch)) {
-        } else {
-            // 处理返回的数据
-        }
-// 关闭cURL会话
+        $error = curl_error($ch);
         curl_close($ch);
+
+        if ($error) {
+            throw new Exception('CURL Error: ' . $error);
+        }
         return json_decode($response, true);
     }
 }
