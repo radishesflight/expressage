@@ -15,7 +15,7 @@ $data = [
             "fullAddress" => "江苏省无锡市江阴市新桥镇北欧印象xx栋xxx号"
         ],
         "orderOrigin" => 1,
-        "customerCode" => "010K8969875", # 商家编码
+        "customerCode" => "010K8921378", # 商家编码
         "productsReq" => [
             "productCode" => "LL-HD-M",
             "productAttrs" => [
@@ -55,5 +55,19 @@ $data = [
         ]
     ]
 ];
-$a=(new \RadishesFlight\ExpressAge\Jd\Jd('https://api.jdl.com','0a6a5d1ef45541d998e99738dcbfa001','168087e648c2234559a833e02b6f7b78b','0498644f101c46d387053d9f251f235b'))->execute($data,'/ecap/v1/orders/create');
+// 创建订单
+//$a=(new \RadishesFlight\ExpressAge\Jd\Jd('https://api.jdl.com','0a6a5d1ef45541d998e99738dcbfa001','168087e648c24ff29a833e02b6f7b78b','0498644f101c46d387053d9f251f0ffb'))->execute($data,'/ecap/v1/orders/create');
+//print_r($a);
+
+
+$body = [
+    [
+        'waybillCode' => 'JDVA42692820772',
+        'orderOrigin' => 1,
+        'customerCode' => '010K8921378'
+    ]
+
+];
+//查询轨迹
+$a=(new \RadishesFlight\ExpressAge\Jd\Jd('https://api.jdl.com','0a6a5d1ef45541d998e99738dcbfa001','168087e648c24ff29a833e02b6f7b78b','0498644f101c46d387053d9f251f0ffb'))->execute($body,'/ecap/v1/orders/trace/query');
 print_r($a);
