@@ -12,7 +12,7 @@
         "php": ">=7.1.0",
         "lpilp/guomi": "^2.0",
         "tecnickcom/tcpdf": "6.*",
-      "ihome520/lop-opensdk-php": "dev-master"
+      "ihome520/lop-opensdk-php": "v1.2"
     },
     "license": "MIT",
     "authors": [
@@ -25,6 +25,5 @@
         "psr-4": {
             "RadishesFlight\\ExpressAge\\": "src/"
         }
-    },
-    "minimum-stability": "dev"
+    }
 }
