@@ -50,7 +50,7 @@ class Yd
         return self::postJson($this->serverUrl, $json_info, $header);
     }
 
-    private static function postJson($url, $data, $header, $timeout = 15)
+    private static function postJson($url, $data, $header, $timeout = 30)
     {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
